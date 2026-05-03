@@ -31,6 +31,9 @@ WORKDIR /app
 
 ENV NODE_ENV production
 
+# Install prisma CLI matching the version in package.json to run db push
+RUN npm install -g prisma@5.14.0
+
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
@@ -54,4 +57,4 @@ ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
 # 4. Use a shell to execute multiple commands at runtime
-CMD ["sh", "-c", "npx prisma db push && node server.js"]
+CMD ["sh", "-c", "prisma db push && node server.js"]
