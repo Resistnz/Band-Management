@@ -2,13 +2,14 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Music, DollarSign, Target, Image as ImageIcon, Settings } from 'lucide-react'
+import { LayoutDashboard, Music, DollarSign, Target, Image as ImageIcon, Settings, Calendar } from 'lucide-react'
 
 export default function Sidebar() {
   const pathname = usePathname()
 
   const navItems = [
     { name: 'Dashboard', path: '/', icon: LayoutDashboard },
+    { name: 'Gigs', path: '/gigs', icon: Calendar },
     { name: 'Songs & Setlists', path: '/songs', icon: Music },
     { name: 'Finances', path: '/finances', icon: DollarSign },
     { name: 'Roadmap', path: '/roadmap', icon: Target },

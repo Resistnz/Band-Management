@@ -1,7 +1,9 @@
 import prisma from '@/lib/prisma'
-import { addSong, deleteSong } from './actions'
+import { addSong, deleteSong, updateSongNotes } from './actions'
 import { Music, Plus, Trash2 } from 'lucide-react'
-import { MostPlayedChart, TopRatedChart } from '@/components/SongCharts'
+import { MostPlayedChart, TopRatedChart, CoversByYearChart } from '@/components/SongCharts'
+import EditableSongRow from './EditableSongRow'
+import AddSongForm from './AddSongForm'
 
 export default async function SongsPage() {
   const songs = await prisma.song.findMany({
@@ -21,6 +23,19 @@ export default async function SongsPage() {
     }
   })
 
+  // Group covers by year
+  const coversByYear = songs
+    .filter(s => s.isCover && s.releaseYear)
+    .reduce((acc, song) => {
+      const year = song.releaseYear!.toString()
+      acc[year] = (acc[year] || 0) + 1
+      return acc
+    }, {} as Record<string, number>)
+
+  const coversChartData = Object.entries(coversByYear)
+    .map(([year, count]) => ({ year, count }))
+    .sort((a, b) => parseInt(a.year) - parseInt(b.year))
+
   return (
     <div>
       <header className="flex-between mb-6">
@@ -30,7 +45,7 @@ export default async function SongsPage() {
         </div>
       </header>
 
-      <div className="grid grid-cols-2 mb-6">
+      <div className="grid grid-cols-3 mb-6">
         <div className="glass-panel">
           <h2 className="mb-4" style={{ fontSize: '1.125rem' }}>Most Played Songs</h2>
           <MostPlayedChart data={chartData} />
@@ -38,6 +53,10 @@ export default async function SongsPage() {
         <div className="glass-panel">
           <h2 className="mb-4" style={{ fontSize: '1.125rem' }}>Top Rated Songs</h2>
           <TopRatedChart data={chartData} />
+        </div>
+        <div className="glass-panel">
+          <h2 className="mb-4" style={{ fontSize: '1.125rem' }}>Covers By Year</h2>
+          <CoversByYearChart data={coversChartData} />
         </div>
       </div>
 
@@ -60,45 +79,26 @@ export default async function SongsPage() {
               {songs.length === 0 ? (
                 <tr><td colSpan={4} className="text-center">No songs added yet.</td></tr>
               ) : songs.map((song) => (
-                <tr key={song.id}>
-                  <td style={{ fontWeight: 500 }}>{song.title}</td>
-                  <td>
-                    <span className="badge badge-accent">{song.setlists.length} times</span>
-                  </td>
-                  <td style={{ color: 'var(--text-secondary)' }}>{song.notes || '-'}</td>
-                  <td className="text-right">
-                    <form action={async () => {
-                      "use server"
-                      await deleteSong(song.id)
-                    }}>
-                      <button type="submit" className="btn btn-secondary" style={{ padding: '0.4rem', color: 'var(--danger)' }}>
-                        <Trash2 size={16} />
-                      </button>
-                    </form>
-                  </td>
-                </tr>
+                <EditableSongRow 
+                  key={song.id} 
+                  song={{
+                    id: song.id,
+                    title: song.title,
+                    notes: song.notes,
+                    setlistsCount: song.setlists.length,
+                    isCover: song.isCover,
+                    originalArtist: song.originalArtist,
+                    releaseYear: song.releaseYear
+                  }} 
+                  onDelete={deleteSong} 
+                  onUpdateNotes={updateSongNotes} 
+                />
               ))}
             </tbody>
           </table>
         </div>
 
-        <div className="glass-panel" style={{ height: 'fit-content' }}>
-          <h2 className="flex-center gap-2" style={{ justifyContent: 'flex-start' }}>
-            <Plus size={20} className="text-accent" />
-            Add New Song
-          </h2>
-          <form action={addSong} className="mt-4">
-            <div className="input-group">
-              <label className="input-label" htmlFor="title">Song Title</label>
-              <input type="text" id="title" name="title" className="input-field" required placeholder="e.g. Free Bird" />
-            </div>
-            <div className="input-group">
-              <label className="input-label" htmlFor="notes">Notes / Tuning (Optional)</label>
-              <input type="text" id="notes" name="notes" className="input-field" placeholder="e.g. Drop D, Capo 2" />
-            </div>
-            <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>Add Song</button>
-          </form>
-        </div>
+        <AddSongForm action={addSong} />
       </div>
     </div>
   )

@@ -55,3 +55,23 @@ export function TopRatedChart({ data }: { data: ChartData[] }) {
     </div>
   )
 }
+
+export function CoversByYearChart({ data }: { data: { year: string, count: number }[] }) {
+  if (data.length === 0) return <p>No cover songs with years recorded.</p>
+
+  return (
+    <div style={{ width: '100%', height: 300 }}>
+      <ResponsiveContainer>
+        <BarChart data={data} margin={{ top: 20, right: 30, left: -20, bottom: 5 }}>
+          <XAxis dataKey="year" stroke="var(--text-secondary)" fontSize={12} tickLine={false} axisLine={false} />
+          <YAxis stroke="var(--text-secondary)" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
+          <Tooltip 
+            cursor={{ fill: 'rgba(255,255,255,0.05)' }}
+            contentStyle={{ backgroundColor: 'var(--panel-bg)', borderColor: 'var(--panel-border)', borderRadius: '8px' }}
+          />
+          <Bar dataKey="count" fill="var(--warning)" radius={[4, 4, 0, 0]} />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  )
+}

@@ -2,7 +2,7 @@ import { Image as ImageIcon, ExternalLink } from 'lucide-react'
 
 export default function PhotosPage() {
   // Replace this URL with the actual URL of the self-hosted Immich instance on the VM
-  const immichUrl = process.env.NEXT_PUBLIC_IMMICH_URL || "http://localhost:2283"
+  const immichUrl = process.env.NEXT_PUBLIC_IMMICH_URL || "http://152.67.103.169:2283"
 
   return (
     <div style={{ height: 'calc(100vh - 5rem)', display: 'flex', flexDirection: 'column' }}>

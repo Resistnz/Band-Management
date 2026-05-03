@@ -9,12 +9,14 @@ datasource db {
 }
 
 model Song {
-  id        String        @id @default(uuid())
-  title     String
-  notes     String?
-  isCover   Boolean       @default(false)
-  createdAt DateTime      @default(now())
-  setlists  SetlistSong[]
+  id             String        @id @default(uuid())
+  title          String
+  notes          String?
+  isCover        Boolean       @default(false)
+  originalArtist String?
+  releaseYear    Int?
+  createdAt      DateTime      @default(now())
+  setlists       SetlistSong[]
 }
 
 model Setlist {
