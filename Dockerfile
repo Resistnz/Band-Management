@@ -1,8 +1,12 @@
 FROM node:20-alpine AS base
 
+# 1. Install necessary shared libraries in the base stage
+# openssl is required for Prisma to communicate with your database
+# libc6-compat is required for process execution in Alpine
+RUN apk add --no-cache libc6-compat openssl
+
 # Install dependencies only when needed
 FROM base AS deps
-RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 COPY package.json package-lock.json* ./
@@ -14,10 +18,11 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Generate Prisma Client
+# 2. Generate Prisma Client before building
 RUN npx prisma generate
 
-# Build Next.js application
+# 3. Build Next.js application
+# (This will now succeed because openssl is available for prerendering)
 RUN npm run build
 
 # Production image, copy all the files and run next
@@ -48,5 +53,5 @@ EXPOSE 3000
 ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
-# Run Prisma db push before starting the app to ensure DB schema is ready
-CMD npx prisma db push && node server.js
+# 4. Use a shell to execute multiple commands at runtime
+CMD ["sh", "-c", "npx prisma db push && node server.js"]
