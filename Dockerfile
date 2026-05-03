@@ -57,4 +57,4 @@ ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
 # 4. Use a shell to execute multiple commands at runtime
-CMD ["sh", "-c", "prisma db push && node server.js"]
+CMD ["sh", "-c", "prisma db push --skip-generate && node server.js"]
