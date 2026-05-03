@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Song {
+  id        String        @id @default(uuid())
+  title     String
+  notes     String?
+  isCover   Boolean       @default(false)
+  createdAt DateTime      @default(now())
+  setlists  SetlistSong[]
+}
+
+model Setlist {
+  id        String        @id @default(uuid())
+  date      DateTime
+  venue     String
+  notes     String?
+  goodNotes String?
+  badNotes  String?
+  interestingNotes String?
+  createdAt DateTime      @default(now())
+  songs     SetlistSong[]
+}
+
+model SetlistSong {
+  id        String  @id @default(uuid())
+  setlistId String
+  songId    String
+  position  Int
+  isOpener  Boolean @default(false)
+  isCloser  Boolean @default(false)
+  rating    Int?
+  feedback  String?
+  setlist   Setlist @relation(fields: [setlistId], references: [id], onDelete: Cascade)
+  song      Song    @relation(fields: [songId], references: [id], onDelete: Cascade)
+}
+
+model Transaction {
+  id          String   @id @default(uuid())
+  date        DateTime
+  amount      Float
+  type        String   // 'INCOME' or 'EXPENSE'
+  category    String
+  description String?
+  createdAt   DateTime @default(now())
+}
+
+model RoadmapItem {
+  id        String   @id @default(uuid())
+  title     String
+  status    String   // 'TODO', 'IN_PROGRESS', 'DONE'
+  createdAt DateTime @default(now())
+}
