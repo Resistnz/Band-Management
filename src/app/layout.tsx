@@ -7,8 +7,10 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "BandHQ | Management Dashboard",
-  description: "Manage your band's songs, finances, and roadmap.",
+  description: "Manage your band's assets, gigs, finances, and roadmap.",
 };
+
+export const dynamic = 'force-dynamic';
 
 export default function RootLayout({
   children,
