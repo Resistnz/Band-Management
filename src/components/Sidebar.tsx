@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Music, DollarSign, Target, Image as ImageIcon, Settings, Calendar } from 'lucide-react'
+import { LayoutDashboard, Music, DollarSign, Target, Image as ImageIcon, Settings, Calendar, Globe } from 'lucide-react'
 
 export default function Sidebar() {
   const pathname = usePathname()
@@ -14,6 +14,7 @@ export default function Sidebar() {
     { name: 'Finances', path: '/finances', icon: DollarSign },
     { name: 'Roadmap', path: '/roadmap', icon: Target },
     { name: 'Photos (Immich)', path: '/photos', icon: ImageIcon },
+    { name: 'Public Website', path: 'https://moondynetheband.netlify.app', icon: Globe, isExternal: true },
   ]
 
   return (
@@ -24,15 +25,31 @@ export default function Sidebar() {
           <span>BandHQ</span>
         </Link>
       </div>
-      
+
       <nav className="nav-links">
         {navItems.map((item) => {
           const Icon = item.icon
+
+          if (item.isExternal) {
+            return (
+              <a
+                key={item.path}
+                href={item.path}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="nav-link"
+              >
+                <Icon size={20} />
+                <span>{item.name}</span>
+              </a>
+            )
+          }
+
           const isActive = pathname === item.path || (item.path !== '/' && pathname.startsWith(item.path))
           return (
-            <Link 
-              key={item.path} 
-              href={item.path} 
+            <Link
+              key={item.path}
+              href={item.path}
               className={`nav-link ${isActive ? 'active' : ''}`}
             >
               <Icon size={20} />

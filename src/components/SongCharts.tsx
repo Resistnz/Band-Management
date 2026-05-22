@@ -63,15 +63,15 @@ export function CoversByYearChart({ data }: { data: { period: string, count: num
   return (
     <div style={{ width: '100%', height: 300 }}>
       <ResponsiveContainer width="100%" height={300} minWidth={0}>
-        <LineChart data={data} margin={{ top: 20, right: 30, left: -20, bottom: 5 }}>
+        <BarChart data={data} margin={{ top: 20, right: 30, left: -20, bottom: 5 }}>
           <XAxis dataKey="period" stroke="var(--text-secondary)" fontSize={11} tickLine={false} axisLine={false} />
           <YAxis stroke="var(--text-secondary)" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
           <Tooltip 
-            cursor={{ stroke: 'rgba(255,255,255,0.2)' }}
+            cursor={{ fill: 'rgba(255,255,255,0.05)' }}
             contentStyle={{ backgroundColor: 'var(--panel-bg)', borderColor: 'var(--panel-border)', borderRadius: '8px' }}
           />
-          <Line type="monotone" dataKey="count" stroke="var(--warning)" strokeWidth={2} dot={{ fill: 'var(--warning)', r: 4 }} activeDot={{ r: 6, fill: 'var(--warning)' }} />
-        </LineChart>
+          <Bar dataKey="count" fill="var(--warning)" radius={[4, 4, 0, 0]} />
+        </BarChart>
       </ResponsiveContainer>
     </div>
   )
