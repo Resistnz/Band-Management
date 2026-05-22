@@ -22,16 +22,17 @@ export default function AddSongForm({ action }: { action: (formData: FormData) =
           <input type="text" id="notes" name="notes" className="input-field" placeholder="e.g. Drop D, Capo 2" />
         </div>
         
-        <div className="input-group" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <div className="input-group" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }} onClick={() => setIsCover(!isCover)}>
           <input 
             type="checkbox" 
             id="isCover" 
             name="isCover" 
             checked={isCover}
-            onChange={(e) => setIsCover(e.target.checked)}
-            style={{ width: '1rem', height: '1rem' }}
+            readOnly
+            style={{ width: '1rem', height: '1rem', pointerEvents: 'none' }}
+            value="on"
           />
-          <label className="input-label" htmlFor="isCover" style={{ marginBottom: 0 }}>This is a cover song</label>
+          <label className="input-label" style={{ marginBottom: 0, pointerEvents: 'none' }}>This is a cover song</label>
         </div>
 
         {isCover && (

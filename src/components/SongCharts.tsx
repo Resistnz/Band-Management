@@ -16,7 +16,7 @@ export function MostPlayedChart({ data }: { data: ChartData[] }) {
 
   return (
     <div style={{ width: '100%', height: 300 }}>
-      <ResponsiveContainer>
+      <ResponsiveContainer width="100%" height={300} minWidth={0}>
         <BarChart data={chartData} margin={{ top: 20, right: 30, left: -20, bottom: 5 }}>
           <XAxis dataKey="name" stroke="var(--text-secondary)" fontSize={12} tickLine={false} axisLine={false} />
           <YAxis stroke="var(--text-secondary)" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
@@ -42,7 +42,7 @@ export function GigsByLocationChart({ data }: { data: { venue: string, count: nu
 
   return (
     <div style={{ width: '100%', height: 300 }}>
-      <ResponsiveContainer>
+      <ResponsiveContainer width="100%" height={300} minWidth={0}>
         <BarChart data={chartData} layout="vertical" margin={{ top: 10, right: 30, left: 10, bottom: 5 }}>
           <XAxis type="number" stroke="var(--text-secondary)" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
           <YAxis type="category" dataKey="venue" stroke="var(--text-secondary)" fontSize={11} tickLine={false} axisLine={false} width={120} />
@@ -62,7 +62,7 @@ export function CoversByYearChart({ data }: { data: { period: string, count: num
 
   return (
     <div style={{ width: '100%', height: 300 }}>
-      <ResponsiveContainer>
+      <ResponsiveContainer width="100%" height={300} minWidth={0}>
         <LineChart data={data} margin={{ top: 20, right: 30, left: -20, bottom: 5 }}>
           <XAxis dataKey="period" stroke="var(--text-secondary)" fontSize={11} tickLine={false} axisLine={false} />
           <YAxis stroke="var(--text-secondary)" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />

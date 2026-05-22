@@ -83,10 +83,10 @@ export default function EditableTransactionRow({
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
               <h3 style={{ margin: 0, fontSize: '1rem' }}>Edit Transaction</h3>
               <div style={{ display: 'flex', gap: '0.5rem' }}>
-                <button onClick={handleSave} disabled={isSaving} className="btn btn-primary" style={{ padding: '0.4rem 0.75rem', fontSize: '0.875rem' }}>
+                <button type="button" onClick={handleSave} disabled={isSaving} className="btn btn-primary" style={{ padding: '0.4rem 0.75rem', fontSize: '0.875rem' }}>
                   <Save size={14} /> {isSaving ? 'Saving...' : 'Save'}
                 </button>
-                <button onClick={handleCancel} className="btn btn-secondary" style={{ padding: '0.4rem 0.75rem', fontSize: '0.875rem' }}>
+                <button type="button" onClick={handleCancel} className="btn btn-secondary" style={{ padding: '0.4rem 0.75rem', fontSize: '0.875rem' }}>
                   <X size={14} /> Cancel
                 </button>
               </div>
@@ -133,7 +133,7 @@ export default function EditableTransactionRow({
 
   return (
     <tr style={rowStyle}>
-      <td>{format(new Date(date), 'MMM dd, yyyy')}</td>
+      <td suppressHydrationWarning>{format(new Date(date), 'MMM dd, yyyy')}</td>
       <td><span className={`badge ${type === 'INCOME' ? 'badge-success' : 'badge-danger'}`}>{category}</span></td>
       <td style={{ color: 'var(--text-secondary)' }}>
         <div>{description || '-'}</div>
@@ -149,6 +149,7 @@ export default function EditableTransactionRow({
       <td className="text-right">
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
           <button
+            type="button"
             onClick={() => setIsEditing(true)}
             className="btn btn-secondary"
             style={{ padding: '0.4rem' }}
@@ -157,6 +158,7 @@ export default function EditableTransactionRow({
             <Edit2 size={16} />
           </button>
           <button
+            type="button"
             onClick={async () => {
               if (confirm('Are you sure you want to delete this transaction?')) {
                 await onDelete(transaction.id)

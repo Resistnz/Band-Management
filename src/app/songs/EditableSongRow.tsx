@@ -78,10 +78,10 @@ export default function EditableSongRow({
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
               <h3 style={{ margin: 0, fontSize: '1rem' }}>Edit Song</h3>
               <div style={{ display: 'flex', gap: '0.5rem' }}>
-                <button onClick={handleSave} disabled={isSaving} className="btn btn-primary" style={{ padding: '0.4rem 0.75rem', fontSize: '0.875rem' }}>
+                <button type="button" onClick={handleSave} disabled={isSaving} className="btn btn-primary" style={{ padding: '0.4rem 0.75rem', fontSize: '0.875rem' }}>
                   <Save size={14} /> {isSaving ? 'Saving...' : 'Save'}
                 </button>
-                <button onClick={handleCancel} className="btn btn-secondary" style={{ padding: '0.4rem 0.75rem', fontSize: '0.875rem' }}>
+                <button type="button" onClick={handleCancel} className="btn btn-secondary" style={{ padding: '0.4rem 0.75rem', fontSize: '0.875rem' }}>
                   <X size={14} /> Cancel
                 </button>
               </div>
@@ -93,9 +93,9 @@ export default function EditableSongRow({
                 <input className="input-field" value={title} onChange={e => setTitle(e.target.value)} placeholder="Song title" />
               </div>
 
-              <div className="input-group" style={{ marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem', paddingTop: '1.5rem' }}>
-                <input type="checkbox" checked={isCover} onChange={e => setIsCover(e.target.checked)} style={{ width: '1rem', height: '1rem' }} id={`cover-${song.id}`} />
-                <label htmlFor={`cover-${song.id}`} className="input-label" style={{ marginBottom: 0 }}>This is a cover song</label>
+              <div className="input-group" style={{ marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem', paddingTop: '1.5rem', cursor: 'pointer' }} onClick={() => setIsCover(!isCover)}>
+                <input type="checkbox" checked={isCover} readOnly style={{ width: '1rem', height: '1rem', pointerEvents: 'none' }} id={`cover-${song.id}`} value="on" />
+                <label style={{ marginBottom: 0, pointerEvents: 'none' }} className="input-label">This is a cover song</label>
               </div>
             </div>
 
@@ -149,6 +149,7 @@ export default function EditableSongRow({
       <td className="text-right">
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
           <button 
+            type="button"
             onClick={() => setIsEditing(true)} 
             className="btn btn-secondary" 
             style={{ padding: '0.4rem' }}
@@ -157,6 +158,7 @@ export default function EditableSongRow({
             <Edit2 size={16} />
           </button>
           <button 
+            type="button"
             onClick={async () => {
               if (confirm('Are you sure you want to delete this song?')) {
                 await onDelete(song.id)
