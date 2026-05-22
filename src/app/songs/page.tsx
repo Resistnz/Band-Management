@@ -1,7 +1,7 @@
 import prisma from '@/lib/prisma'
-import { addSong, deleteSong, updateSongNotes } from './actions'
+import { addSong, deleteSong, updateSong } from './actions'
 import { Music, Plus, Trash2 } from 'lucide-react'
-import { MostPlayedChart, TopRatedChart, CoversByYearChart } from '@/components/SongCharts'
+import { MostPlayedChart, CoversByYearChart } from '@/components/SongCharts'
 import EditableSongRow from './EditableSongRow'
 import AddSongForm from './AddSongForm'
 
@@ -23,18 +23,35 @@ export default async function SongsPage() {
     }
   })
 
-  // Group covers by year
-  const coversByYear = songs
-    .filter(s => s.isCover && s.releaseYear)
-    .reduce((acc, song) => {
-      const year = song.releaseYear!.toString()
-      acc[year] = (acc[year] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
+  // Group covers into 5-year buckets for a compact line chart
+  const coverSongs = songs.filter(s => s.isCover && s.releaseYear)
 
-  const coversChartData = Object.entries(coversByYear)
-    .map(([year, count]) => ({ year, count }))
-    .sort((a, b) => parseInt(a.year) - parseInt(b.year))
+  let coversChartData: { period: string, count: number }[] = []
+  if (coverSongs.length > 0) {
+    const years = coverSongs.map(s => s.releaseYear!)
+    const minYear = Math.min(...years)
+    const maxYear = new Date().getFullYear()
+
+    // Round down to nearest 5-year boundary
+    const bucketStart = Math.floor(minYear / 5) * 5
+    const bucketEnd = Math.ceil((maxYear + 1) / 5) * 5
+
+    const buckets: Record<string, number> = {}
+    for (let y = bucketStart; y < bucketEnd; y += 5) {
+      buckets[`${y}-${y + 4}`] = 0
+    }
+
+    coverSongs.forEach(song => {
+      const yr = song.releaseYear!
+      const bStart = Math.floor(yr / 5) * 5
+      const key = `${bStart}-${bStart + 4}`
+      buckets[key] = (buckets[key] || 0) + 1
+    })
+
+    coversChartData = Object.entries(buckets)
+      .map(([period, count]) => ({ period, count }))
+      .sort((a, b) => parseInt(a.period) - parseInt(b.period))
+  }
 
   return (
     <div>
@@ -45,14 +62,10 @@ export default async function SongsPage() {
         </div>
       </header>
 
-      <div className="grid grid-cols-3 mb-6">
+      <div className="grid grid-cols-2 mb-6">
         <div className="glass-panel">
           <h2 className="mb-4" style={{ fontSize: '1.125rem' }}>Most Played Songs</h2>
           <MostPlayedChart data={chartData} />
-        </div>
-        <div className="glass-panel">
-          <h2 className="mb-4" style={{ fontSize: '1.125rem' }}>Top Rated Songs</h2>
-          <TopRatedChart data={chartData} />
         </div>
         <div className="glass-panel">
           <h2 className="mb-4" style={{ fontSize: '1.125rem' }}>Covers By Year</h2>
@@ -66,36 +79,38 @@ export default async function SongsPage() {
             <h2>Repertoire ({songs.length})</h2>
           </div>
           
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Title</th>
-                <th>Times Played</th>
-                <th>Notes</th>
-                <th className="text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {songs.length === 0 ? (
-                <tr><td colSpan={4} className="text-center">No songs added yet.</td></tr>
-              ) : songs.map((song) => (
-                <EditableSongRow 
-                  key={song.id} 
-                  song={{
-                    id: song.id,
-                    title: song.title,
-                    notes: song.notes,
-                    setlistsCount: song.setlists.length,
-                    isCover: song.isCover,
-                    originalArtist: song.originalArtist,
-                    releaseYear: song.releaseYear
-                  }} 
-                  onDelete={deleteSong} 
-                  onUpdateNotes={updateSongNotes} 
-                />
-              ))}
-            </tbody>
-          </table>
+          <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Times Played</th>
+                  <th>Notes</th>
+                  <th className="text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {songs.length === 0 ? (
+                  <tr><td colSpan={4} className="text-center">No songs added yet.</td></tr>
+                ) : songs.map((song) => (
+                  <EditableSongRow 
+                    key={song.id} 
+                    song={{
+                      id: song.id,
+                      title: song.title,
+                      notes: song.notes,
+                      setlistsCount: song.setlists.length,
+                      isCover: song.isCover,
+                      originalArtist: song.originalArtist,
+                      releaseYear: song.releaseYear
+                    }} 
+                    onDelete={deleteSong} 
+                    onUpdate={updateSong} 
+                  />
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <AddSongForm action={addSong} />

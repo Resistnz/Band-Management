@@ -1,6 +1,6 @@
 import prisma from '@/lib/prisma'
 import { Music, Calendar, DollarSign, Target } from 'lucide-react'
-import { MostPlayedChart, TopRatedChart } from '@/components/SongCharts'
+import { MostPlayedChart, GigsByLocationChart } from '@/components/SongCharts'
 import Link from 'next/link'
 
 export default async function Dashboard() {
@@ -31,6 +31,14 @@ export default async function Dashboard() {
       avgRating
     }
   })
+
+  // Gigs by location data
+  const setlists = await prisma.setlist.findMany()
+  const venueCount = setlists.reduce((acc, s) => {
+    acc[s.venue] = (acc[s.venue] || 0) + 1
+    return acc
+  }, {} as Record<string, number>)
+  const gigsByLocationData = Object.entries(venueCount).map(([venue, count]) => ({ venue, count }))
 
   return (
     <div>
@@ -89,8 +97,8 @@ export default async function Dashboard() {
           <MostPlayedChart data={chartData} />
         </div>
         <div className="glass-panel">
-          <h2 className="mb-4" style={{ fontSize: '1.25rem' }}>Top Rated Performances</h2>
-          <TopRatedChart data={chartData} />
+          <h2 className="mb-4" style={{ fontSize: '1.25rem' }}>Gigs By Location</h2>
+          <GigsByLocationChart data={gigsByLocationData} />
         </div>
       </div>
     </div>

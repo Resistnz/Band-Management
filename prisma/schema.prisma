@@ -45,13 +45,14 @@ model SetlistSong {
 }
 
 model Transaction {
-  id          String   @id @default(uuid())
-  date        DateTime
-  amount      Float
-  type        String   // 'INCOME' or 'EXPENSE'
-  category    String
-  description String?
-  createdAt   DateTime @default(now())
+  id             String   @id @default(uuid())
+  date           DateTime
+  amount         Float
+  type           String   // 'INCOME' or 'EXPENSE'
+  category       String
+  description    String?
+  attachmentLink String?
+  createdAt      DateTime @default(now())
 }
 
 model RoadmapItem {

@@ -25,40 +25,42 @@ export default async function GigsPage() {
         <div className="glass-panel" style={{ gridColumn: 'span 2' }}>
           <h2 className="mb-6">Timeline</h2>
           
-          <div className="flex flex-col gap-4">
-            {gigs.length === 0 ? (
-              <p className="text-center">No gigs scheduled yet.</p>
-            ) : gigs.map((gig) => (
-              <div key={gig.id} className="glass-panel flex-between" style={{ padding: '0', background: 'rgba(255,255,255,0.02)', overflow: 'hidden', transition: 'all 0.2s ease' }}>
-                <Link href={`/gigs/${gig.id}`} className="flex-between" style={{ flex: 1, padding: '1rem', textDecoration: 'none', color: 'inherit' }}>
-                  <div className="flex items-center gap-4">
-                    <div style={{ color: 'var(--accent-color)' }}>
-                      <ChevronRight size={24} />
-                    </div>
-                    <div>
-                      <h3 className="mb-2 flex items-center gap-2">
-                        {gig.venue}
-                      </h3>
-                      <div className="flex gap-4" style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                        <span className="flex items-center gap-1"><Calendar size={14}/> {format(new Date(gig.date), 'MMMM d, yyyy')}</span>
-                        <span className="flex items-center gap-1"><MusicIcon size={14}/> {gig.songs.length} songs</span>
+          <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
+            <div className="flex flex-col gap-4">
+              {gigs.length === 0 ? (
+                <p className="text-center">No gigs scheduled yet.</p>
+              ) : gigs.map((gig) => (
+                <div key={gig.id} className="glass-panel flex-between" style={{ padding: '0', background: 'rgba(255,255,255,0.02)', overflow: 'hidden', transition: 'all 0.2s ease' }}>
+                  <Link href={`/gigs/${gig.id}`} className="flex-between" style={{ flex: 1, padding: '1rem', textDecoration: 'none', color: 'inherit' }}>
+                    <div className="flex items-center gap-4">
+                      <div style={{ color: 'var(--accent-color)' }}>
+                        <ChevronRight size={24} />
+                      </div>
+                      <div>
+                        <h3 className="mb-2 flex items-center gap-2">
+                          {gig.venue}
+                        </h3>
+                        <div className="flex gap-4" style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+                          <span className="flex items-center gap-1"><Calendar size={14}/> {format(new Date(gig.date), 'MMMM d, yyyy')}</span>
+                          <span className="flex items-center gap-1"><MusicIcon size={14}/> {gig.songs.length} songs</span>
+                        </div>
                       </div>
                     </div>
+                  </Link>
+                  
+                  <div className="flex items-center gap-2" style={{ paddingRight: '1rem' }}>
+                    <form action={async () => {
+                      "use server"
+                      await deleteGig(gig.id)
+                    }}>
+                      <button type="submit" className="btn btn-secondary" style={{ padding: '0.5rem', color: 'var(--danger)', border: 'none' }}>
+                        <Trash2 size={18} />
+                      </button>
+                    </form>
                   </div>
-                </Link>
-                
-                <div className="flex items-center gap-2" style={{ paddingRight: '1rem' }}>
-                  <form action={async () => {
-                    "use server"
-                    await deleteGig(gig.id)
-                  }}>
-                    <button type="submit" className="btn btn-secondary" style={{ padding: '0.5rem', color: 'var(--danger)', border: 'none' }}>
-                      <Trash2 size={18} />
-                    </button>
-                  </form>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
 

@@ -32,10 +32,22 @@ export async function deleteSong(id: string) {
   revalidatePath('/songs')
 }
 
-export async function updateSongNotes(id: string, notes: string) {
+export async function updateSong(id: string, data: {
+  title: string
+  notes: string
+  isCover: boolean
+  originalArtist: string | null
+  releaseYear: number | null
+}) {
   await prisma.song.update({
     where: { id },
-    data: { notes }
+    data: {
+      title: data.title,
+      notes: data.notes,
+      isCover: data.isCover,
+      originalArtist: data.originalArtist,
+      releaseYear: data.releaseYear,
+    }
   })
   revalidatePath('/songs')
 }

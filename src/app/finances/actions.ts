@@ -9,6 +9,7 @@ export async function addTransaction(formData: FormData) {
   const category = formData.get('category') as string
   const description = formData.get('description') as string
   const dateStr = formData.get('date') as string
+  const attachmentLink = formData.get('attachmentLink') as string
 
   if (!amountStr || !type || !category || !dateStr) return
 
@@ -22,6 +23,7 @@ export async function addTransaction(formData: FormData) {
       category,
       description,
       date,
+      attachmentLink: attachmentLink || null,
     }
   })
 
@@ -30,5 +32,27 @@ export async function addTransaction(formData: FormData) {
 
 export async function deleteTransaction(id: string) {
   await prisma.transaction.delete({ where: { id } })
+  revalidatePath('/finances')
+}
+
+export async function updateTransaction(id: string, data: {
+  date: string
+  amount: number
+  type: string
+  category: string
+  description: string | null
+  attachmentLink: string | null
+}) {
+  await prisma.transaction.update({
+    where: { id },
+    data: {
+      date: new Date(data.date),
+      amount: data.amount,
+      type: data.type,
+      category: data.category,
+      description: data.description,
+      attachmentLink: data.attachmentLink,
+    }
+  })
   revalidatePath('/finances')
 }

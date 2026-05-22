@@ -1,7 +1,8 @@
 import prisma from '@/lib/prisma'
-import { addTransaction, deleteTransaction } from './actions'
+import { addTransaction, deleteTransaction, updateTransaction } from './actions'
 import { format } from 'date-fns'
 import { DollarSign, Plus, Trash2, ArrowUpRight, ArrowDownRight } from 'lucide-react'
+import EditableTransactionRow from './EditableTransactionRow'
 
 export default async function FinancesPage() {
   const transactions = await prisma.transaction.findMany({
@@ -50,41 +51,39 @@ export default async function FinancesPage() {
       <div className="grid grid-cols-3">
         <div className="glass-panel" style={{ gridColumn: 'span 2' }}>
           <h2 className="mb-6">Ledger</h2>
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Category</th>
-                <th>Description</th>
-                <th className="text-right">Amount</th>
-                <th className="text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {transactions.length === 0 ? (
-                <tr><td colSpan={5} className="text-center">No transactions yet.</td></tr>
-              ) : transactions.map((t) => (
-                <tr key={t.id}>
-                  <td>{format(new Date(t.date), 'MMM dd, yyyy')}</td>
-                  <td><span className={`badge ${t.type === 'INCOME' ? 'badge-success' : 'badge-danger'}`}>{t.category}</span></td>
-                  <td style={{ color: 'var(--text-secondary)' }}>{t.description || '-'}</td>
-                  <td className="text-right" style={{ color: t.type === 'INCOME' ? 'var(--success)' : 'var(--danger)', fontWeight: 600 }}>
-                    {t.type === 'INCOME' ? '+' : '-'}${t.amount.toFixed(2)}
-                  </td>
-                  <td className="text-right">
-                    <form action={async () => {
-                      "use server"
-                      await deleteTransaction(t.id)
-                    }}>
-                      <button type="submit" className="btn btn-secondary" style={{ padding: '0.4rem', color: 'var(--danger)' }}>
-                        <Trash2 size={16} />
-                      </button>
-                    </form>
-                  </td>
+          <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Category</th>
+                  <th>Description</th>
+                  <th className="text-right">Amount</th>
+                  <th className="text-right">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {transactions.length === 0 ? (
+                  <tr><td colSpan={5} className="text-center">No transactions yet.</td></tr>
+                ) : transactions.map((t) => (
+                  <EditableTransactionRow
+                    key={t.id}
+                    transaction={{
+                      id: t.id,
+                      date: format(new Date(t.date), 'yyyy-MM-dd'),
+                      amount: t.amount,
+                      type: t.type,
+                      category: t.category,
+                      description: t.description,
+                      attachmentLink: t.attachmentLink,
+                    }}
+                    onDelete={deleteTransaction}
+                    onUpdate={updateTransaction}
+                  />
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <div className="glass-panel" style={{ height: 'fit-content' }}>
@@ -115,6 +114,10 @@ export default async function FinancesPage() {
             <div className="input-group">
               <label className="input-label" htmlFor="description">Description (Optional)</label>
               <input type="text" id="description" name="description" className="input-field" placeholder="Notes about this..." />
+            </div>
+            <div className="input-group">
+              <label className="input-label" htmlFor="attachmentLink">Attachment Link (Optional)</label>
+              <input type="url" id="attachmentLink" name="attachmentLink" className="input-field" placeholder="https://drive.google.com/..." />
             </div>
             <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>Save Transaction</button>
           </form>
