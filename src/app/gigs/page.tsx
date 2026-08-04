@@ -25,29 +25,29 @@ export default async function GigsPage() {
         <div className="glass-panel" style={{ gridColumn: 'span 2' }}>
           <h2 className="mb-6">Timeline</h2>
           
-          <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
-            <div className="flex flex-col gap-4">
+          <div className="list-scroll-container">
+            <div className="flex flex-col gap-3">
               {gigs.length === 0 ? (
                 <p className="text-center">No gigs scheduled yet.</p>
               ) : gigs.map((gig) => (
                 <div key={gig.id} className="glass-panel flex-between" style={{ padding: '0', background: 'rgba(255,255,255,0.02)', overflow: 'hidden', transition: 'all 0.2s ease' }}>
-                  <Link href={`/gigs/${gig.id}`} className="flex-between" style={{ flex: 1, padding: '1rem', textDecoration: 'none', color: 'inherit' }}>
-                    <div className="flex items-center gap-4">
+                  <Link href={`/gigs/${gig.id}`} className="flex-between" style={{ flex: 1, padding: '0.875rem 1rem', textDecoration: 'none', color: 'inherit' }}>
+                    <div className="flex items-center gap-3">
                       <div style={{ color: 'var(--accent-color)' }}>
-                        <ChevronRight size={24} />
+                        <ChevronRight size={22} />
                       </div>
                       <div>
-                        <h3 className="mb-1 flex items-center gap-2">
-                          {gig.venue}
+                        <h3 className="flex items-center gap-2 flex-wrap" style={{ fontSize: '1.05rem', margin: 0, fontWeight: 600 }}>
+                          <span>{gig.venue}</span>
+                          {gig.notes && (
+                            <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', fontWeight: 400 }}>
+                              — {gig.notes}
+                            </span>
+                          )}
                         </h3>
-                        {gig.notes && (
-                          <p style={{ fontSize: '0.875rem', color: 'var(--text-primary)', marginBottom: '0.5rem', opacity: 0.9 }}>
-                            {gig.notes}
-                          </p>
-                        )}
-                        <div className="flex gap-4" style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                          <span className="flex items-center gap-1"><Calendar size={14}/> {format(new Date(gig.date), 'MMMM d, yyyy')}</span>
-                          <span className="flex items-center gap-1"><MusicIcon size={14}/> {gig.songs.length} songs</span>
+                        <div className="flex gap-4 mt-1" style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
+                          <span className="flex items-center gap-1"><Calendar size={13}/> {format(new Date(gig.date), 'MMMM d, yyyy')}</span>
+                          <span className="flex items-center gap-1"><MusicIcon size={13}/> {gig.songs.length} songs</span>
                         </div>
                       </div>
                     </div>
@@ -58,8 +58,8 @@ export default async function GigsPage() {
                       "use server"
                       await deleteGig(gig.id)
                     }}>
-                      <button type="submit" className="btn btn-secondary" style={{ padding: '0.5rem', color: 'var(--danger)', border: 'none' }}>
-                        <Trash2 size={18} />
+                      <button type="submit" className="btn btn-secondary" style={{ padding: '0.4rem', color: 'var(--danger)', border: 'none' }}>
+                        <Trash2 size={16} />
                       </button>
                     </form>
                   </div>

@@ -72,7 +72,7 @@ export default async function FinancesPage() {
       <div className="grid grid-cols-3">
         <div className="glass-panel" style={{ gridColumn: 'span 2' }}>
           <h2 className="mb-6">Ledger</h2>
-          <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
+          <div className="list-scroll-container">
             <table className="data-table">
               <thead>
                 <tr>
