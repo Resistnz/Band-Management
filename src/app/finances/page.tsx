@@ -1,8 +1,9 @@
 import prisma from '@/lib/prisma'
 import { addTransaction, deleteTransaction, updateTransaction } from './actions'
 import { format } from 'date-fns'
-import { DollarSign, Plus, Trash2, ArrowUpRight, ArrowDownRight } from 'lucide-react'
+import { DollarSign, Plus, Trash2, ArrowUpRight, ArrowDownRight, TrendingUp } from 'lucide-react'
 import EditableTransactionRow from './EditableTransactionRow'
+import { MoneyOverTimeChart } from '@/components/FinanceChart'
 
 export default async function FinancesPage() {
   const transactions = await prisma.transaction.findMany({
@@ -12,6 +13,18 @@ export default async function FinancesPage() {
   const income = transactions.filter(t => t.type === 'INCOME').reduce((sum, t) => sum + t.amount, 0)
   const expenses = transactions.filter(t => t.type === 'EXPENSE').reduce((sum, t) => sum + t.amount, 0)
   const balance = income - expenses
+
+  // Compute cumulative balance trend over time
+  const chronologicalTxs = [...transactions].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+  let currentAccumulated = 0
+  const trendData = chronologicalTxs.map(t => {
+    const change = t.type === 'INCOME' ? t.amount : -t.amount
+    currentAccumulated += change
+    return {
+      date: format(new Date(t.date), 'MMM d, yyyy'),
+      balance: Math.round(currentAccumulated * 100) / 100
+    }
+  })
 
   return (
     <div>
@@ -46,6 +59,14 @@ export default async function FinancesPage() {
           </div>
           <span className="stat-value text-danger">${expenses.toFixed(2)}</span>
         </div>
+      </div>
+
+      <div className="glass-panel mb-6">
+        <h2 className="flex items-center gap-2 mb-4" style={{ display: 'flex', alignItems: 'center' }}>
+          <TrendingUp size={20} style={{ color: 'var(--accent-color)' }} />
+          Money Over Time
+        </h2>
+        <MoneyOverTimeChart data={trendData} />
       </div>
 
       <div className="grid grid-cols-3">

@@ -37,9 +37,14 @@ export default async function GigsPage() {
                         <ChevronRight size={24} />
                       </div>
                       <div>
-                        <h3 className="mb-2 flex items-center gap-2">
+                        <h3 className="mb-1 flex items-center gap-2">
                           {gig.venue}
                         </h3>
+                        {gig.notes && (
+                          <p style={{ fontSize: '0.875rem', color: 'var(--text-primary)', marginBottom: '0.5rem', opacity: 0.9 }}>
+                            {gig.notes}
+                          </p>
+                        )}
                         <div className="flex gap-4" style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
                           <span className="flex items-center gap-1"><Calendar size={14}/> {format(new Date(gig.date), 'MMMM d, yyyy')}</span>
                           <span className="flex items-center gap-1"><MusicIcon size={14}/> {gig.songs.length} songs</span>
