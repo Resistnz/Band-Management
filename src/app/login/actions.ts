@@ -11,7 +11,7 @@ export async function login(formData: FormData) {
     const cookieStore = await cookies()
     cookieStore.set('bandhq_auth', 'authenticated', {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: false, // Allows cookie to work over HTTP on port 3000
       sameSite: 'lax',
       path: '/',
       maxAge: 60 * 60 * 24 * 90, // 90 days
