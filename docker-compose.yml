@@ -8,9 +8,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - bandhq_db:/app/prisma
+      - ./data/dev.db:/app/prisma/dev.db
     environment:
       - DATABASE_URL=file:/app/prisma/dev.db
-
-volumes:
-  bandhq_db:
+      - BAND_PASSWORD=moondyne2026

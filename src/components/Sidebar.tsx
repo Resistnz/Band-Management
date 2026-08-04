@@ -2,10 +2,15 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Music, DollarSign, Target, Image as ImageIcon, Settings, Calendar, Globe } from 'lucide-react'
+import { LayoutDashboard, Music, DollarSign, Target, Image as ImageIcon, Settings, Calendar, Globe, LogOut } from 'lucide-react'
+import { logout } from '@/app/login/actions'
 
 export default function Sidebar() {
   const pathname = usePathname()
+
+  if (pathname === '/login') {
+    return null
+  }
 
   const navItems = [
     { name: 'Dashboard', path: '/', icon: LayoutDashboard },
@@ -60,11 +65,24 @@ export default function Sidebar() {
       </nav>
 
       <div className="sidebar-footer">
-        <Link href="/settings" className="nav-link">
-          <Settings size={20} />
-          <span>Settings</span>
-        </Link>
+        <button
+          onClick={() => logout()}
+          className="nav-link"
+          style={{
+            background: 'none',
+            border: 'none',
+            width: '100%',
+            cursor: 'pointer',
+            textAlign: 'left',
+            color: 'inherit',
+            font: 'inherit'
+          }}
+        >
+          <LogOut size={20} />
+          <span>Log Out</span>
+        </button>
       </div>
     </aside>
   )
 }
+
