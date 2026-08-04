@@ -26,7 +26,7 @@ export default async function GigsPage() {
           <h2 className="mb-6">Timeline</h2>
           
           <div className="list-scroll-container">
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-4">
               {gigs.length === 0 ? (
                 <p className="text-center">No gigs scheduled yet.</p>
               ) : gigs.map((gig) => (
